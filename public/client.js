@@ -1,7 +1,67 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.2.0/firebase-app.js";
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+} from "https://www.gstatic.com/firebasejs/10.2.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCERDtC-uZIW56b6h2zrMpaVQbMkhgdhPE",
+
+    authDomain: "canvus-db331.firebaseapp.com",
+
+    projectId: "canvus-db331",
+
+    storageBucket: "canvus-db331.firebasestorage.app",
+
+    messagingSenderId: "187869281206",
+
+    appId: "1:187869281206:web:463b59754f9d4fa1cddf17",
+
+    measurementId: "G-MRPS5Q8MP4",
+};
+
+// Initialize Firebase
+
+const app = initializeApp(firebaseConfig);
+
 const socket = io();
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
 let currentColor = "#fff";
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+async function login() {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
+    const response = await fetch("/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+    });
+    const token_response_json = await response.json();
+    localStorage.setItem("token", token_response_json.token);
+    load();
+}
+
+function load() {
+    document.addEventListener("DOMContentLoaded", () => {
+        const content = document.getElementsByClassName("workspace")[0];
+        content.style.display = "flex";
+    });
+}
+const token = localStorage.getItem("token");
+
+if (!token) {
+    login();
+} else {
+    load();
+}
 
 function connect(x1, y1, x2, y2, color) {
     ctx.lineWidth = 5;

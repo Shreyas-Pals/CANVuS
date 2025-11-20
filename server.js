@@ -2,13 +2,45 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import { createClient } from "redis";
+import jwt from "jsonwebtoken";
+import fs from "fs";
+import admin from "firebase-admin";
+import dotenv from "dotenv";
+dotenv.config();
+
+const path = process.env.SERVICE_ACCOUNT_CREDS;
+
+const serviceAccountCreds = JSON.parse(fs.readFileSync(path, "utf8"));
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccountCreds),
+});
 
 const app = express();
+
+//To parse json files(middleware)
+app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server);
 const redisClient = createClient();
 
 app.use(express.static("public"));
+
+app.post("/auth", async (req, res) => {
+    const { idToken } = req.body;
+
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const jwtToken = jwt.sign(
+        {
+            uid: decoded.uid,
+            email: decoded.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "2h" },
+    );
+
+    res.json({ token: jwtToken });
+});
 
 redisClient.on("error", (err) => console.log("Redis couldn't connect", err));
 async function connectToRedis() {
