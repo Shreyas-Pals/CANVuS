@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Your Dashboard</h1>
+        <p>Manage your canvases below</p>
+        <button id="newCanvasBtn">+ New Canvas</button>
+    </div>
+
+    <div class="canvas-list" id="canvasList"></div>
+
+    <script type="module" src="src/dashboard.js">
+        const newCanvasBtn = document.getElementById("newCanvasBtn");
+        const canvasList = document.getElementById("canvasList");
+    </script>
+</body>
+
+</html>
