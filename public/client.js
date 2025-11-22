@@ -124,5 +124,3 @@ customPicker.addEventListener("input", () => {
     currentColor = customPicker.value;
     chosenColor.style.backgroundColor = currentColor;
 });
-
-console.log();

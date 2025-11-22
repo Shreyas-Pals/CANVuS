@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canvas Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/canvas.css" />
+</head>
+
+<body style="background-image: url(&quot;bg.png&quot;)">
+    <div class="workspace" style="border: 2px solid black">
+        <div class="tools-sidebar" style="border: 2px solid black">
+            <a href="#" class="btn btn-light" title="Erase"><i class="fa-solid fa-paintbrush"></i></a>
+            <a href="#" class="btn btn-light" title="Clear Canvas"><i class="fa-solid fa-trash"></i></a>
+            <a href="#" class="btn btn-light" title="Undo"><i class="fa-solid fa-rotate-left"></i></a>
+            <a href="#" class="btn btn-light" title="Redo"><i class="fa-solid fa-rotate-right"></i></a>
+
+            <button class="color-square" style="background: #000" data-color="#000"></button>
+            <button class="color-square" style="background: #f00" data-color="#f00"></button>
+            <button class="color-square" style="background: #0f0" data-color="#0f0"></button>
+            <button class="color-square" style="background: #00f" data-color="#00f"></button>
+            <button class="color-square" style="background: #ff0" data-color="#ff0"></button>
+
+            <label class="color-square" id="custom-picker">
+                <input type="color" id="customColor" />
+            </label>
+
+            <div id="chosen-color" style="background-color: red; height: 100px; border-radius: 10px"></div>
+        </div>
+        <div class="canvas-section">
+            <canvas id="canvas" width="1200" height="800" class="bg-white" style="border: 2px solid black">
+            </canvas>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <!--Adding type module here as client.js includes imports  -->
+    <script type="module" src="src/client.js"></script>
+</body>
+
+</html>
