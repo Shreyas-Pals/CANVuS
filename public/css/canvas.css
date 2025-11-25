@@ -5,6 +5,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 5px;
 }
 
 .workspace {
@@ -18,12 +19,12 @@ body {
   height: auto;
 }
 .tools-sidebar {
-  height: 800px;
-  display: flex;
+  background: linear-gradient(to top, #ffffff, #6dd5fa, #2980b9);
+  display: none;
   flex-direction: column;
   gap: 2.5vh;
   padding: 1.5vh;
-  background: #ffffff;
+  border-radius: 10px;
 }
 
 .btn i {

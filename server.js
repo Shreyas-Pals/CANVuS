@@ -102,13 +102,14 @@ connectToRedis();
 io.on("connection", async (socket) => {
     console.log("A user connected");
     socket.on("sendingId", async (canvasId) => {
+        socket.join(`canvas_${canvasId}`);
         const cache = await redisClient.lRange(`canvas:${canvasId}`, 0, -1);
         socket.emit("canvas_init", cache.map(JSON.parse));
         socket.on("pixel_update_sent", (data) => {
             redisClient
                 .rPush(`canvas:${canvasId}`, JSON.stringify(data))
                 .catch(() => console.error("Redis has a problem.."));
-            socket.broadcast.emit("pixel_update_message", data);
+            socket.to(`canvas_${canvasId}`).emit("pixel_update_message", data);
         });
     });
     socket.on("disconnect", () => console.log("A user disconnected"));

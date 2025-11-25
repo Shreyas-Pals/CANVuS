@@ -52,8 +52,7 @@ async function fetchCanvases() {
 
 onIdTokenChanged(auth, async (user) => {
     if (!user) {
-        localStorage.removeItem("jwt_token");
-        return;
+        window.location.href = "/index.html";
     }
     console.log("Token refresh");
     const newIdToken = await user.getIdToken();
@@ -65,12 +64,12 @@ onIdTokenChanged(auth, async (user) => {
     });
 
     const data = await res.json();
-    console.log("Hello");
     localStorage.setItem("jwt_token", data.token);
     tokenRefreshed = true;
     console.log(tokenRefreshed);
     fetchCanvases();
 });
+
 const canvasList = document.getElementById("canvasList");
 const canvasModal = new bootstrap.Modal(document.getElementById("canvasModal"));
 
@@ -86,6 +85,8 @@ canvasForm.addEventListener("submit", async function (e) {
         this.classList.add("was-validated");
         return;
     }
+
+    document.getElementById("createBtn").disabled = true;
 
     try {
         const name = document.getElementById("canvasName").value;
@@ -110,6 +111,7 @@ canvasForm.addEventListener("submit", async function (e) {
         canvasList.appendChild(card);
 
         canvasModal.hide();
+        document.getElementById("createBtn").disabled = false;
 
         card.addEventListener("click", () => {
             window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
