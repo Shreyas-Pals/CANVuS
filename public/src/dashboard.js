@@ -25,30 +25,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const newcanvasBtn = document.getElementById("newCanvasBtn");
 const token = localStorage.getItem("jwt_token");
+let tokenRefreshed = false;
 
-onIdTokenChanged(auth, async (user) => {
-    if (!user) {
-        localStorage.removeItem("jwt_token");
-        return;
-    }
-    console.log("Token refresh");
-    const newIdToken = await user.getIdToken();
-
-    const res = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken: newIdToken }),
-    });
-
-    const data = await res.json();
-    localStorage.setItem("jwt_token", data.token);
-});
-
-const canvasList = document.getElementById("canvasList");
-const canvasModal = new bootstrap.Modal(document.getElementById("canvasModal"));
 async function fetchCanvases() {
     try {
-        canvasList.innerHTML = "Token is Invalid, Refresh The Page.";
         const response = await fetch("/api/canvases", {
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -70,48 +50,71 @@ async function fetchCanvases() {
     }
 }
 
-fetchCanvases();
+onIdTokenChanged(auth, async (user) => {
+    if (!user) {
+        localStorage.removeItem("jwt_token");
+        return;
+    }
+    console.log("Token refresh");
+    const newIdToken = await user.getIdToken();
+    console.log(newIdToken);
+    const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: newIdToken }),
+    });
+
+    const data = await res.json();
+    console.log("Hello");
+    localStorage.setItem("jwt_token", data.token);
+    tokenRefreshed = true;
+    console.log(tokenRefreshed);
+    fetchCanvases();
+});
+const canvasList = document.getElementById("canvasList");
+const canvasModal = new bootstrap.Modal(document.getElementById("canvasModal"));
 
 newcanvasBtn.addEventListener("click", () => {
+    canvasModal.show();
+});
+
+const canvasForm = document.getElementById("canvasForm");
+canvasForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    if (!this.checkValidity()) {
+        this.classList.add("was-validated");
+        return;
+    }
+
     try {
-        canvasModal.show();
-        document
-            .getElementById("canvasForm")
-            .addEventListener("submit", async function (e) {
-                //This is for preventing form submission and reload:- (default behaviour)
-                e.preventDefault();
-                if (!this.checkValidity()) {
-                    this.classList.add("was-validated");
-                    return;
-                }
+        const name = document.getElementById("canvasName").value;
+        const width = document.getElementById("canvasWidth").value || 50;
+        const height = document.getElementById("canvasHeight").value || 50;
 
-                const name = document.getElementById("canvasName").value;
-                const width = document.getElementById("canvasWidth").value || 50;
-                const height = document.getElementById("canvasHeight").value || 50;
+        const response = await fetch("/api/canvases", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name, height, width }),
+        });
 
-                const response = await fetch("/api/canvases", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ name: name, height: height, width: width }),
-                });
+        const data = await response.json();
+        console.log("Canvas created:", data);
 
-                const data = await response.json();
-                console.log("Canvas created:", data);
+        const card = document.createElement("div");
+        card.className = "canvas-card";
+        card.innerHTML = `${data.name} <span style="font-size:10px; color:#555">${data.height}px * ${data.width}px</span>`;
+        canvasList.appendChild(card);
 
-                const card = document.createElement("div");
-                card.className = "canvas-card";
-                card.innerHTML = `${data.name} <span style="font-size:10px; color:#555">${data.height}px * ${data.width}px</span>`;
-                canvasList.appendChild(card);
-                canvasModal.hide();
+        canvasModal.hide();
 
-                card.addEventListener("click", () => {
-                    window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
-                });
-            });
+        card.addEventListener("click", () => {
+            window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
+        });
     } catch (err) {
-        console.log("Error creating a new canvas", err);
+        console.error("Error creating a new canvas", err);
     }
 });
