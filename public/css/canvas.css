@@ -8,14 +8,15 @@ body {
 }
 
 .workspace {
-  display: none;
+  display: flex;
   padding: 20px;
 }
 
 #canvas {
-  height: 800px;
+  display: none;
+  max-width: 100%;
+  height: auto;
 }
-
 .tools-sidebar {
   height: 800px;
   display: flex;

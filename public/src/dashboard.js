@@ -48,18 +48,22 @@ const canvasList = document.getElementById("canvasList");
 const canvasModal = new bootstrap.Modal(document.getElementById("canvasModal"));
 async function fetchCanvases() {
     try {
-        canvasList.innerHTML = "";
+        canvasList.innerHTML = "Token is Invalid, Refresh The Page.";
         const response = await fetch("/api/canvases", {
             headers: { Authorization: `Bearer ${token}` },
         });
 
         const canvases = await response.json();
 
-        canvases.forEach((c) => {
+        canvases.forEach((canvas) => {
             const card = document.createElement("div");
             card.className = "canvas-card";
-            card.textContent = c.name;
+            card.innerHTML = `${canvas.name} <span style="font-size:10px; color:#555">${canvas.height}px * ${canvas.width}px</span>`;
+
             canvasList.appendChild(card);
+            card.addEventListener("click", () => {
+                window.location.href = `/canvas.html?id=${canvas.id}&height=${canvas.height}&width=${canvas.width}`;
+            });
         });
     } catch (err) {
         console.error("Error fetching canvases:", err);
@@ -71,42 +75,43 @@ fetchCanvases();
 newcanvasBtn.addEventListener("click", () => {
     try {
         canvasModal.show();
-        document.getElementById("createBtn").addEventListener("click", async () => {
-            const response = await fetch("/api/canvases", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ name: `Canvas ${Date.now()}` }),
+        document
+            .getElementById("canvasForm")
+            .addEventListener("submit", async function (e) {
+                //This is for preventing form submission and reload:- (default behaviour)
+                e.preventDefault();
+                if (!this.checkValidity()) {
+                    this.classList.add("was-validated");
+                    return;
+                }
+
+                const name = document.getElementById("canvasName").value;
+                const width = document.getElementById("canvasWidth").value || 50;
+                const height = document.getElementById("canvasHeight").value || 50;
+
+                const response = await fetch("/api/canvases", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ name: name, height: height, width: width }),
+                });
+
+                const data = await response.json();
+                console.log("Canvas created:", data);
+
+                const card = document.createElement("div");
+                card.className = "canvas-card";
+                card.innerHTML = `${data.name} <span style="font-size:10px; color:#555">${data.height}px * ${data.width}px</span>`;
+                canvasList.appendChild(card);
+                canvasModal.hide();
+
+                card.addEventListener("click", () => {
+                    window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
+                });
             });
-
-            const data = await response.json();
-            console.log("Canvas created:", data);
-
-            const card = document.createElement("div");
-            card.className = "canvas-card";
-            card.textContent = data.name;
-            document.getElementById("canvasList").appendChild(card);
-            canvasModal.hide();
-        });
     } catch (err) {
         console.log("Error creating a new canvas", err);
     }
 });
-
-function createCanvas() {
-    const name = document.getElementById("canvasName").value;
-    const width = document.getElementById("canvasWidth").value;
-    const height = document.getElementById("canvasHeight").value;
-    const access = document.getElementById("canvasAccess").value;
-
-    if (!name || !width || !height) {
-        alert("Fill all fields!");
-        return;
-    }
-
-    console.log({ name, width, height, access });
-
-    closePopup();
-}

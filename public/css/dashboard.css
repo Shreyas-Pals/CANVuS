@@ -16,7 +16,6 @@ html {
   padding: 2vh 0;
 }
 
-/* Main container */
 .container {
   text-align: center;
   background: linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
@@ -114,6 +113,10 @@ button#newCanvasBtn:hover {
 
 .modal-content,
 .modal-body {
+  border: none;
+}
+
+.modal-header {
   border: none;
 }
 

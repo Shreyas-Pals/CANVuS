@@ -48,7 +48,7 @@ app.use(Middleware);
 
 app.post("/api/canvases", async (req, res) => {
     try {
-        const name = req.body.name;
+        const { name, height, width } = req.body;
         const userId = req.user.uid;
 
         const canvasRef = await db
@@ -57,6 +57,8 @@ app.post("/api/canvases", async (req, res) => {
             .collection("canvases")
             .add({
                 name,
+                height,
+                width,
                 createdAt: admin.firestore.FieldValue.serverTimestamp(),
             });
         const canvasDoc = await canvasRef.get();
@@ -99,22 +101,22 @@ connectToRedis();
 
 io.on("connection", async (socket) => {
     console.log("A user connected");
-
-    const cache = await redisClient.lRange("canvas:1", 0, -1);
-    socket.emit("canvas_init", cache.map(JSON.parse));
-    socket.on("pixel_update_sent", (data) => {
-        redisClient
-            .rPush("canvas:1", JSON.stringify(data))
-            .catch(() => console.error("Redis has a problem.."));
-        socket.broadcast.emit("pixel_update_message", data);
+    socket.on("sendingId", async (canvasId) => {
+        const cache = await redisClient.lRange(`canvas:${canvasId}`, 0, -1);
+        socket.emit("canvas_init", cache.map(JSON.parse));
+        socket.on("pixel_update_sent", (data) => {
+            redisClient
+                .rPush(`canvas:${canvasId}`, JSON.stringify(data))
+                .catch(() => console.error("Redis has a problem.."));
+            socket.broadcast.emit("pixel_update_message", data);
+        });
     });
-
     socket.on("disconnect", () => console.log("A user disconnected"));
 });
 
-process.on("SIGINT", async () => {
-    await redisClient.del("canvas:1");
-    process.exit(0);
-});
-
+// process.on("SIGINT", async () => {
+//     await redisClient.del("canvas:1");
+//     process.exit(0);
+// });
+//
 server.listen(3000, "0.0.0.0", () => console.log("Server running"));
