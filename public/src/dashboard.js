@@ -53,9 +53,9 @@ onIdTokenChanged(auth, async (user) => {
     if (!user) {
         window.location.href = "/index.html";
     }
-    console.log("Token refresh");
+    // console.log("Token refresh");
     const newIdToken = await user.getIdToken();
-    console.log(newIdToken);
+    // console.log(newIdToken);
     const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -101,7 +101,7 @@ canvasForm.addEventListener("submit", async function (e) {
         });
 
         const data = await response.json();
-        console.log("Canvas created:", data);
+        // console.log("Canvas created:", data);
 
         const card = document.createElement("div");
         card.className = "canvas-card";

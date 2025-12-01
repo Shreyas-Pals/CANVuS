@@ -50,7 +50,7 @@ async function login() {
         body: JSON.stringify({ idToken }),
     });
     const token_response_json = await response.json();
-    console.log(token_response_json.token);
+    // console.log(token_response_json.token);
     localStorage.setItem("jwt_token", token_response_json.token);
 }
 
@@ -72,7 +72,7 @@ onIdTokenChanged(auth, async (user) => {
         localStorage.removeItem("jwt_token");
         return;
     }
-    console.log("Token refresh");
+    // console.log("Token refresh");
     const newIdToken = await user.getIdToken();
 
     const res = await fetch("/api/auth", {

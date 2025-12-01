@@ -41,7 +41,7 @@ canvas.width = canvasWidth;
 canvas.height = canvasHeight;
 sidebar.height = canvasHeight;
 
-console.log(access);
+// console.log(access);
 if (access === "private") {
     const addPeopleBtn = document.getElementById("addPeopleBtn");
     addPeopleBtn.style.display = "inline-block";
@@ -92,9 +92,11 @@ onIdTokenChanged(auth, (user) => {
     }
 });
 
+let strokeWidth = 5;
+
 let currentColor = "#fff";
 function connect(x1, x2, y1, y2, color) {
-    ctx.lineWidth = 5;
+    ctx.lineWidth = strokeWidth;
     ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -109,7 +111,7 @@ socket.on("pixel_update_message", (data) => {
 });
 
 socket.on("canvas_init", (data) => {
-    console.log(data);
+    // console.log(data);
     for (const cmd of data) {
         connect(cmd.x1, cmd.x2, cmd.y1, cmd.y2, cmd.color);
     }
@@ -148,6 +150,8 @@ const colorButtons = document.querySelectorAll(".color-square");
 const chosenColor = document.getElementById("chosen-color");
 colorButtons.forEach((button) => {
     button.addEventListener("click", () => {
+        canvas.classList.remove("eraser-cursor");
+        strokeWidth = 5;
         currentColor = button.dataset.color;
         chosenColor.style.backgroundColor = currentColor;
         canDraw = true;
@@ -156,7 +160,23 @@ colorButtons.forEach((button) => {
 
 const customPicker = document.getElementById("customColor");
 customPicker.addEventListener("input", () => {
+    canvas.classList.remove("eraser-cursor");
+    strokeWidth = 5;
     currentColor = customPicker.value;
     chosenColor.style.backgroundColor = currentColor;
     canDraw = true;
+});
+
+const erase = document.getElementById("erase");
+erase.addEventListener("click", () => {
+    canvas.classList.add("eraser-cursor");
+    strokeWidth = 15;
+    currentColor = "white";
+    chosenColor.style.backgroundColor = currentColor;
+    canDraw = true;
+});
+
+const home = document.getElementById("home");
+home.addEventListener("click", () => {
+    window.location.href = "/dashboard.html";
 });

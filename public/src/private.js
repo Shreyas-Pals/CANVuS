@@ -24,7 +24,7 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 const token = localStorage.getItem("jwt_token");
-console.log("Hello");
+// console.log("Hello");
 
 const canvasList = document.getElementById("canvasList");
 
@@ -55,9 +55,9 @@ onIdTokenChanged(auth, async (user) => {
     if (!user) {
         window.location.href = "/index.html";
     }
-    console.log("Token refresh");
+    // console.log("Token refresh");
     const newIdToken = await user.getIdToken();
-    console.log(newIdToken);
+    // console.log(newIdToken);
     const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
