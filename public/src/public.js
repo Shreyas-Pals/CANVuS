@@ -40,7 +40,7 @@ async function fetchCanvases() {
 
             canvasList.appendChild(card);
             card.addEventListener("click", () => {
-                window.location.href = `/canvas.html?id=${canvas.id}&height=${canvas.height}&width=${canvas.width}&access=${canvas.id}`;
+                window.location.href = `/canvas.html?id=${canvas.id}&height=${canvas.height}&width=${canvas.width}&access=${canvas.access}`;
             });
         });
     } catch (err) {

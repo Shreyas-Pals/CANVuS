@@ -101,9 +101,28 @@ async function connectToRedis() {
 
 connectToRedis();
 
+io.use(async (socket, next) => {
+    try {
+        const token = socket.handshake.auth.token;
+        const decoded = await admin.auth().verifyIdToken(token);
+        socket.user = decoded;
+        next();
+    } catch (err) {
+        next(new Error("Unauthorized"));
+    }
+});
+
 io.on("connection", async (socket) => {
     console.log("A user connected");
     socket.on("sendingId", async (canvasId) => {
+        const canvasDoc = await db.collection("canvases").doc(canvasId).get();
+        const canvas = canvasDoc.data();
+        if (canvas.access == "private") {
+            if (canvas.owner !== socket.user.uid) {
+                console.log("Unauthorized access attempt by", socket.user.uid);
+                return;
+            }
+        }
         socket.join(`canvas_${canvasId}`);
         const cache = await redisClient.lRange(`canvas:${canvasId}`, 0, -1);
         socket.emit("canvas_init", cache.map(JSON.parse));
