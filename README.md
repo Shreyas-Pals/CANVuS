@@ -54,7 +54,11 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
    SERVICE_ACCOUNT_CREDS=/path/to/serviceAccountKey.json
    REDIS_URL=<your-redis-url>
    ```
+(Optional): Generate a secure JWT secret using the included script:
 
+```bash
+node crypt.js
+ ```
 4. Start the server:
 
    ```bash
