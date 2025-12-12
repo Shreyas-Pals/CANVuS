@@ -24,7 +24,7 @@ html {
   padding: 5vh 5vw;
   border-radius: 15px;
   box-shadow: 0 0.8vh 2vh rgba(0, 0, 0, 0.5);
-  max-width: 800px;
+  /* max-width: 800px; */
   width: 90%;
   margin-bottom: 5vh;
 }

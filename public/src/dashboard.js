@@ -29,11 +29,10 @@ const token = localStorage.getItem("jwt_token");
 async function fetchCanvases() {
     try {
         const response = await fetch("/api/canvases", {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem("jwt_token")}` },
         });
 
         const canvases = await response.json();
-
         canvases.forEach((canvas) => {
             const card = document.createElement("div");
             card.className = "canvas-card";

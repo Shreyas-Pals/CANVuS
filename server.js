@@ -49,50 +49,60 @@ app.use(Middleware);
 app.post("/api/canvases", async (req, res) => {
     try {
         const { name, height, width, access } = req.body;
-        const userId = req.user.uid;
+        const userid = req.user.uid;
 
-        const canvasRef = await db.collection("canvases").add({
+        const canvasref = await db.collection("canvases").add({
             name,
             width,
             height,
-            access, // REQUIRED
-            owner: userId, // REQUIRED
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            access,
+            owner: userid,
+            createdat: admin.firestore.FieldValue.serverTimestamp(),
         });
-        const canvasDoc = await canvasRef.get();
+        const canvasdoc = await canvasref.get();
 
         res.status(201).json({
-            id: canvasRef.id,
-            ...canvasDoc.data(),
+            id: canvasref.id,
+            ...canvasdoc.data(),
         });
     } catch (error) {
-        console.log("Error creating canvas:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.log("POST canvases error:", error);
+        res.status(500).json({ error: "internal server error" });
     }
 });
 
 app.get("/api/canvases", async (req, res) => {
     const access = req.query.access;
-    const userId = req.user.uid;
-    const userEmail = req.user.email;
+    const userid = req.user.uid;
+    const useremail = req.user.email;
     let db_query = db.collection("canvases");
-
-    if (access) {
-        if (access === "private") {
-            db_query = db_query.where("owner", "==", userId);
-        } else if (access === "shared") {
-            db_query = db_query.where("sharedWith", "array-contains", userEmail);
+    try {
+        if (access) {
+            if (access === "private") {
+                db_query = db_query
+                    .where("access", "==", access)
+                    .where("owner", "==", userid);
+            } else if (access === "shared") {
+                db_query = db_query
+                    .where("access", "==", access)
+                    .where("shareWith", "array-contains", useremail);
+            }
+        } else {
+            db_query = db_query.where("owner", "==", userid);
         }
 
-        db_query = db_query.where("access", "==", access);
-        const canvasesRef = await db_query.get();
-        const result = canvasesRef.docs.map((doc) => ({
+        const canvasesref = await db_query.get();
+        const result = canvasesref.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
         }));
 
         res.json(result);
-    });
+    } catch (err) {
+        console.error("GET canvases error:", err);
+        res.status(500).json({ error: "internal server error" });
+    }
+});
 
 app.post("/api/:canvasId/emails", async (req, res) => {
     try {
@@ -113,7 +123,7 @@ app.post("/api/:canvasId/emails", async (req, res) => {
         });
     } catch (err) {
         console.error("POST email error:", err);
-        res.status(500).send("Server error");
+        res.status(500).send("internal server error");
     }
 });
 
@@ -129,7 +139,7 @@ app.get("/api/:canvasId/emails", async (req, res) => {
         });
     } catch (err) {
         console.error("GET emails error:", err);
-        res.status(500).send("Server error");
+        res.status(500).send("internal server error");
     }
 });
 
