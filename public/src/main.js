@@ -38,6 +38,7 @@ async function login() {
         user.email.endsWith("@goa.bits-pilani.ac.in") ||
         user.email.endsWith("@dubai.bits-pilani.ac.in")
     ) {
+    } else {
         auth.signOut();
         alert("Use a BITS college email to login.");
     }

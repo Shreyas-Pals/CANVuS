@@ -29,7 +29,11 @@ const canvas = document.getElementById("canvas");
 const sidebar = document.getElementById("sidebar");
 const ctx = canvas.getContext("2d");
 const params = new URLSearchParams(window.location.search);
-
+if (window.innerWidth <= 768) {
+    document.body.addEventListener("touchmove", (e) => e.preventDefault(), {
+        passive: false,
+    });
+}
 const canvasWidth = parseInt(params.get("width"));
 const canvasHeight = parseInt(params.get("height"));
 const canvasId = params.get("id");
@@ -79,7 +83,7 @@ onIdTokenChanged(auth, async (user) => {
     let prevX = null;
     let prevY = null;
 
-    canvas.addEventListener("mousemove", (e) => {
+    function drawAndEmit(e) {
         if (!canDraw) return;
         if (e.buttons !== 1) {
             prevX = null;
@@ -102,6 +106,17 @@ onIdTokenChanged(auth, async (user) => {
 
         prevX = x;
         prevY = y;
+    }
+
+    // Desktop
+    canvas.addEventListener("mousemove", drawAndEmit);
+
+    // Mobile
+    canvas.addEventListener("touchstart", drawAndEmit, { passive: false });
+    canvas.addEventListener("touchmove", drawAndEmit, { passive: false });
+    canvas.addEventListener("touchend", () => {
+        prevX = null;
+        prevY = null;
     });
 });
 
@@ -182,8 +197,8 @@ if (access === "private") {
 
     loadEmailList();
 
+    const emailInput = document.getElementById("emailInput");
     addEmail.addEventListener("click", async () => {
-        const emailInput = document.getElementById("emailInput");
         const email = emailInput.value.trim();
 
         const emailRegex =
