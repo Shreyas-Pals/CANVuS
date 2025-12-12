@@ -59,6 +59,7 @@ function connect(x1, x2, y1, y2, color) {
 let canDraw = false;
 
 onIdTokenChanged(auth, async (user) => {
+    let callBackQueue = [0];
     if (!user) {
         window.location.href = "/login.html";
     }
@@ -69,14 +70,20 @@ onIdTokenChanged(auth, async (user) => {
 
     socket.emit("sendingId", canvasId);
 
-    socket.on("pixel_update_message", (data) => {
-        connect(data.x1, data.x2, data.y1, data.y2, data.color);
-    });
-
     socket.on("canvas_init", (data) => {
-        // console.log(data);
         for (const cmd of data) {
             connect(cmd.x1, cmd.x2, cmd.y1, cmd.y2, cmd.color);
+        }
+        callBackQueue.shift();
+        for (data in callBackQueue) {
+            connect(data.x1, data.x2, data.y1, data.y2, data.color);
+        }
+    });
+    socket.on("pixel_update_message", (data) => {
+        if (callBackQueue.includes(0)) {
+            callBackQueue.push(data);
+        } else {
+            connect(data.x1, data.x2, data.y1, data.y2, data.color);
         }
     });
 
@@ -103,21 +110,20 @@ onIdTokenChanged(auth, async (user) => {
                 color: currentColor,
             });
         }
-
         prevX = x;
         prevY = y;
     }
 
     // Desktop
     canvas.addEventListener("mousemove", drawAndEmit);
-
-    // Mobile
-    canvas.addEventListener("touchstart", drawAndEmit, { passive: false });
-    canvas.addEventListener("touchmove", drawAndEmit, { passive: false });
-    canvas.addEventListener("touchend", () => {
-        prevX = null;
-        prevY = null;
-    });
+    //
+    // // Mobile
+    // canvas.addEventListener("touchstart", drawAndEmit, { passive: false });
+    // canvas.addEventListener("touchmove", drawAndEmit, { passive: false });
+    // canvas.addEventListener("touchend", () => {
+    //     prevX = null;
+    //     prevY = null;
+    // });
 });
 
 const colorButtons = document.querySelectorAll(".color-square");

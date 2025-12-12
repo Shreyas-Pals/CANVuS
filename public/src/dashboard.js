@@ -31,7 +31,7 @@ async function fetchCanvases() {
         const response = await fetch("/api/canvases", {
             headers: { Authorization: `Bearer ${localStorage.getItem("jwt_token")}` },
         });
-
+        console.log("fetchCanvases");
         const canvases = await response.json();
         canvases.forEach((canvas) => {
             const card = document.createElement("div");
@@ -86,8 +86,8 @@ canvasForm.addEventListener("submit", async function (e) {
 
     try {
         const name = document.getElementById("canvasName").value;
-        const width = document.getElementById("canvasWidth").value || 50;
-        const height = document.getElementById("canvasHeight").value || 50;
+        const width = document.getElementById("canvasWidth").value || 600;
+        const height = document.getElementById("canvasHeight").value || 600;
         const access = document.getElementById("canvasAccess").value;
 
         const response = await fetch("/api/canvases", {
