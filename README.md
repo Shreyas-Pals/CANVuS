@@ -4,34 +4,34 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
 
 ## Features
 
-* **Real-time collaboration:** Multiple users can draw on the canvas simultaneously.
-* **Canvas types:**
+- **Real-time collaboration:** Multiple users can draw on the canvas simultaneously.
+- **Canvas types:**
+  - **Private:** Only accessible by the creator.
+  - **Public:** Anyone can join and draw.
+  - **Shared:** Collaborators can be invited by email.
 
-  * **Private:** Only accessible by the creator.
-  * **Public:** Anyone can join and draw.
-  * **Shared:** Collaborators can be invited by email.
-* **Drawing tools:**
+- **Drawing tools:**
+  - Pen
+  - Eraser
+  - Colors with a color picker
 
-  * Pen
-  * Eraser
-  * Colors with a color picker
-* **Canvas sizes:** Create canvases of different sizes based on your needs.
-* **Minimal UX:** Lightweight and simple interface for distraction-free drawing.
-* **Session management:** Users can join a session via a unique link.
-* **Authentication:** OAuth2 + JWT for secure access.
-* **Persistent state:** Canvas updates are synced in real-time and cached using **Redis**.
-* **Firebase integration:** Stores user and session data.
+- **Canvas sizes:** Create canvases of different sizes based on your needs.
+- **Minimal UX:** Lightweight and simple interface for distraction-free drawing.
+- **Session management:** Users can join a session via a unique link.
+- **Authentication:** OAuth2 + JWT for secure access.
+- **Persistent state:** Canvas updates are synced in real-time and cached using **Redis**.
+- **Firebase integration:** Stores user and session data.
 
 ### Prerequisites
 
-* **Node.js** (v18+ recommended)
-* **Redis**
+- **Node.js** (v18+ recommended)
+- **Redis**
   Install Redis locally or use a hosted instance. For local installation:
+  - On macOS: `brew install redis`
+  - On Ubuntu: `sudo apt install redis-server`
+  - On Windows: [Download from Redis official site](https://redis.io/download)
 
-  * On macOS: `brew install redis`
-  * On Ubuntu: `sudo apt install redis-server`
-  * On Windows: [Download from Redis official site](https://redis.io/download)
-* **Firebase Service Account JSON** (see SERVICE_ACCOUNT_CREDS below)
+- **Firebase Service Account JSON** (see SERVICE_ACCOUNT_CREDS below)
 
 ## Installation
 
@@ -75,33 +75,28 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
 
 Path to your Firebase Service Account JSON file, which contains:
 
-* `project_id`
-* `private_key`
-* `client_email`
-* Other credentials required for Firebase Admin SDK access
+- `project_id`
+- `private_key`
+- `client_email`
+- Other credentials required for Firebase Admin SDK access
 
 ## Usage
 
-* Log in using Google OAuth2.
-* Create a new canvas: select type (private, public, or shared) and size.
-* For **shared canvases**, invite collaborators by entering their email addresses.
-* Use the toolbar to:
-
-  * Draw or erase
-  * Pick colors using the color picker
-  * Undo/redo actions
-* Owners of shared canvases have control over session management.
+- Log in using Google OAuth2.
+- Create a new canvas: select type (private, public, or shared) and size.
+- Manage your canvas in your dashboard
+- For **shared canvases**, invite collaborators by entering their email addresses.
+- Owners of shared canvases have control over session management.
 
 ## Tech Stack
 
-* **Backend:** Node.js, Express
-* **Real-time updates:** WebSockets (Socket.IO)
-* **Caching:** Redis
-* **Authentication:** OAuth2 + JWT
-* **Database:** Firebase for session and canvas state
-* **Front-end:** HTML, CSS, JS (Canvas API)
+- **Backend:** Node.js, Express
+- **Real-time updates:** WebSockets (Socket.IO)
+- **Caching:** Redis
+- **Authentication:** OAuth2 + JWT
+- **Database:** Firebase for session and canvas state
+- **Front-end:** HTML, CSS, JS (Canvas API)
 
 ## Contribution
 
-* Contributions are welcome! Open issues or submit pull requests for bug fixes or improvements. New features will be coming up, so stay tuned!
-
+- Contributions are welcome! Open issues or submit pull requests for bug fixes or improvements. New features will be coming up, so stay tuned!
