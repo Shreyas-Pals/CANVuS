@@ -29,11 +29,6 @@ const canvas = document.getElementById("canvas");
 const sidebar = document.getElementById("sidebar");
 const ctx = canvas.getContext("2d");
 const params = new URLSearchParams(window.location.search);
-if (window.innerWidth <= 768) {
-    document.body.addEventListener("touchmove", (e) => e.preventDefault(), {
-        passive: false,
-    });
-}
 const canvasWidth = parseInt(params.get("width"));
 const canvasHeight = parseInt(params.get("height"));
 const canvasId = params.get("id");

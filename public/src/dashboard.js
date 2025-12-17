@@ -31,7 +31,6 @@ async function fetchCanvases() {
         const response = await fetch("/api/canvases", {
             headers: { Authorization: `Bearer ${localStorage.getItem("jwt_token")}` },
         });
-        console.log("fetchCanvases");
         const canvases = await response.json();
         canvases.forEach((canvas) => {
             const card = document.createElement("div");
@@ -111,7 +110,7 @@ canvasForm.addEventListener("submit", async function (e) {
         document.getElementById("createBtn").disabled = false;
 
         card.addEventListener("click", () => {
-            window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}`;
+            window.location.href = `/canvas.html?id=${data.id}&height=${height}&width=${width}&access=${access}`;
         });
     } catch (err) {
         console.error("Error creating a new canvas", err);

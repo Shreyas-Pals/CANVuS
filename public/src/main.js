@@ -32,15 +32,16 @@ async function login() {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    if (
+    const allowed =
         user.email.endsWith("@hyderabad.bits-pilani.ac.in") ||
         user.email.endsWith("@pilani.bits-pilani.ac.in") ||
         user.email.endsWith("@goa.bits-pilani.ac.in") ||
-        user.email.endsWith("@dubai.bits-pilani.ac.in")
-    ) {
-    } else {
-        auth.signOut();
+        user.email.endsWith("@dubai.bits-pilani.ac.in");
+
+    if (!allowed) {
+        await auth.signOut();
         alert("Use a BITS college email to login.");
+        return;
     }
 
     const idToken = await user.getIdToken();
@@ -59,11 +60,14 @@ const signin_button = document.getElementById("googleSignIn");
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        // console.log("dashboard");
         signin_button.textContent = "Dashboard";
-        signin_button.addEventListener("click", () => {
+        signin_button.onclick = () => {
             window.location.href = "/dashboard.html";
-        });
+        };
     } else {
+        // console.log("not allowed");
+        signin_button.textContent = "Sign in with Google";
         signin_button.onclick = login;
     }
 });

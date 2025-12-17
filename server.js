@@ -83,9 +83,7 @@ app.get("/api/canvases", async (req, res) => {
                     .where("access", "==", access)
                     .where("owner", "==", userid);
             } else if (access === "shared") {
-                db_query = db_query
-                    .where("access", "==", access)
-                    .where("shareWith", "array-contains", useremail);
+                db_query = db_query.where("shareWith", "array-contains", useremail);
             }
         } else {
             db_query = db_query.where("owner", "==", userid);
