@@ -1,0 +1,5 @@
+.eslintrc.js
+jsconfig.json
+.env
+oauthcredentials.json
+serviceAccFirebase.json
