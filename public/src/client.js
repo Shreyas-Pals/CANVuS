@@ -60,7 +60,7 @@ onIdTokenChanged(auth, async (user) => {
     }
     const token = await user.getIdToken();
     const socket = io({
-        auth: { token },
+        auth: { token, canvasId },
     });
 
     socket.emit("sendingId", canvasId);
@@ -111,14 +111,6 @@ onIdTokenChanged(auth, async (user) => {
 
     // Desktop
     canvas.addEventListener("mousemove", drawAndEmit);
-    //
-    // // Mobile
-    // canvas.addEventListener("touchstart", drawAndEmit, { passive: false });
-    // canvas.addEventListener("touchmove", drawAndEmit, { passive: false });
-    // canvas.addEventListener("touchend", () => {
-    //     prevX = null;
-    //     prevY = null;
-    // });
 });
 
 const colorButtons = document.querySelectorAll(".color-square");
@@ -202,13 +194,13 @@ if (access === "private") {
     addEmail.addEventListener("click", async () => {
         const email = emailInput.value.trim();
 
-        const emailRegex =
-            /^[^@]+@(hyderabad|goa|pilani|dubai)\.bits-pilani\.ac\.in$/;
-
-        if (!emailRegex.test(email)) {
-            alert("Invalid Email. Emails must be from the BITS Pilani Domain.");
-            return;
-        }
+        // const emailRegex =
+        //     /^[^@]+@(hyderabad|goa|pilani|dubai)\.bits-pilani\.ac\.in$/;
+        //
+        // if (!emailRegex.test(email)) {
+        //     alert("Invalid Email. Emails must be from the BITS Pilani Domain.");
+        //     return;
+        // }
 
         const existingEmails = Array.from(emailList.querySelectorAll("li")).map(
             (li) => li.textContent.trim().split("\n")[0],

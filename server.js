@@ -78,6 +78,7 @@ app.get("/api/canvases", async (req, res) => {
     let db_query = db.collection("canvases");
     try {
         if (access) {
+            // console.log(access)
             if (access === "private") {
                 db_query = db_query
                     .where("access", "==", access)
@@ -85,8 +86,11 @@ app.get("/api/canvases", async (req, res) => {
             } else if (access === "shared") {
                 db_query = db_query.where("shareWith", "array-contains", useremail);
             }
+            else{
+                db_query=db_query.where("access", "==", access)
+            }
         } else {
-            db_query = db_query.where("owner", "==", userid);
+            db_query = db_query.where("owner", "==", userid)
         }
 
         const canvasesref = await db_query.get();
@@ -162,29 +166,37 @@ io.use(async (socket, next) => {
 
 io.on("connection", async (socket) => {
     console.log("A user connected");
+
     socket.on("sendingId", async (canvasId) => {
         const canvasDoc = await db.collection("canvases").doc(canvasId).get();
         const canvas = canvasDoc.data();
+
         if (canvas.access == "private") {
-            if (canvas.owner !== socket.user.uid) {
+            if (
+                canvas.owner !== socket.user.uid
+                // !canvas.shareWith.includes(socket.user.uid)
+            ) {
                 console.log("Unauthorized access attempt by", socket.user.uid);
                 return;
             }
         }
+
         socket.join(`canvas_${canvasId}`);
+
         const cache = await redisClient.lRange(`canvas:${canvasId}`, 0, -1);
         socket.emit("canvas_init", cache.map(JSON.parse));
+
         socket.on("pixel_update_sent", (data) => {
             redisClient
                 .rPush(`canvas:${canvasId}`, JSON.stringify(data))
                 .catch(() => console.error("Redis has a problem.."));
+
             socket.to(`canvas_${canvasId}`).emit("pixel_update_message", data);
         });
     });
-    socket.on("disconnect", () => console.log("A user disconnected"));
-});
 
-// process.on("SIGINT", async () => {
+    socket.on("disconnect", () => console.log("A user disconnected"));
+}); // process.on("SIGINT", async () => {
 //     await redisClient.del("canvas:1");
 //     process.exit(0);
 // });

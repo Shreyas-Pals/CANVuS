@@ -32,18 +32,18 @@ async function login() {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const allowed =
-        user.email.endsWith("@hyderabad.bits-pilani.ac.in") ||
-        user.email.endsWith("@pilani.bits-pilani.ac.in") ||
-        user.email.endsWith("@goa.bits-pilani.ac.in") ||
-        user.email.endsWith("@dubai.bits-pilani.ac.in");
-
-    if (!allowed) {
-        await auth.signOut();
-        alert("Use a BITS college email to login.");
-        return;
-    }
-
+    // const allowed =
+    //     user.email.endsWith("@hyderabad.bits-pilani.ac.in") ||
+    //     user.email.endsWith("@pilani.bits-pilani.ac.in") ||
+    //     user.email.endsWith("@goa.bits-pilani.ac.in") ||
+    //     user.email.endsWith("@dubai.bits-pilani.ac.in");
+    //
+    // if (!allowed) {
+    //     await auth.signOut();
+    //     alert("Use a BITS college email to login.");
+    //     return;
+    // }
+    //
     const idToken = await user.getIdToken();
 
     const response = await fetch("/api/auth", {
