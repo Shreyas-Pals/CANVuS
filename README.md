@@ -8,7 +8,7 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
 - **Canvas types:**
   - **Private:** Only accessible by the creator.
   - **Public:** Anyone can join and draw.
-  - **Shared:** Collaborators can be invited by email.
+  - **Shared:** Collaborators can be allowed to join via email.
 
 - **Drawing tools:**
   - Pen
@@ -16,10 +16,10 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
   - Colors with a color picker
 
 - **Canvas sizes:** Create canvases of different sizes based on your needs.
-- **Minimal UX:** Lightweight and simple interface for distraction-free drawing.
+- **Minimal UX**
 - **Session management:** Users can join a session via a unique link.
-- **Authentication:** OAuth2 + JWT for secure access.
-- **Persistent state:** Canvas updates are synced in real-time and cached using **Redis**.
+- **Authentication:** OAuth2 + JWT
+- **Persistent state:** Canvas updates are synced, and cached using **Redis**.
 - **Firebase integration:** Stores user and session data.
 
 ### Prerequisites
@@ -99,4 +99,4 @@ Path to your Firebase Service Account JSON file, which contains:
 
 ## Contribution
 
-- Contributions are welcome! Open issues or submit pull requests for bug fixes or improvements. New features will be coming up, so stay tuned!
+- Contributions are welcome.
