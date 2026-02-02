@@ -10,13 +10,8 @@ A **real-time collaborative drawing canvas** where multiple users can draw, eras
   - **Public:** Anyone can join and draw.
   - **Shared:** Collaborators can be allowed to join via email.
 
-- **Drawing tools:**
-  - Pen
-  - Eraser
-  - Colors with a color picker
-
+- **Drawing tools:** Pen, Eraser, A Color picker
 - **Canvas sizes:** Create canvases of different sizes based on your needs.
-- **Minimal UX**
 - **Session management:** Users can join a session via a unique link.
 - **Authentication:** OAuth2 + JWT
 - **Persistent state:** Canvas updates are synced, and cached using **Redis**.
